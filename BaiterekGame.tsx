@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export default function BaiterekGame({ onWin }: { onWin: () => void }) {
+// Added onProgress to the props definition
+export default function BaiterekGame({ onWin, onProgress }: { onWin: () => void, onProgress?: (p: number) => void }) {
     const [progress, setProgress] = useState(0);
     const [isPressing, setIsPressing] = useState(false);
 
@@ -14,12 +15,20 @@ export default function BaiterekGame({ onWin }: { onWin: () => void }) {
                         clearInterval(timer);
                         return 100;
                     }
-                    return prev + 1;
+                    const next = prev + 1;
+                    
+                    // Trigger Camel facts at specific progress points
+                    if (onProgress) {
+                        if (next === 1) onProgress(1);   // Just started
+                        if (next === 50) onProgress(2);  // Halfway point
+                    }
+                    
+                    return next;
                 });
             }, 30);
         }
         return () => clearInterval(timer);
-    }, [isPressing, progress]);
+    }, [isPressing, progress, onProgress]); // Added onProgress to dependency array
 
     useEffect(() => {
         if (progress === 100) {
@@ -35,7 +44,6 @@ export default function BaiterekGame({ onWin }: { onWin: () => void }) {
             </div>
 
             <div className="relative flex items-center justify-center">
-                {/* Эффект свечения вокруг */}
                 <motion.div
                     animate={{
                         scale: isPressing ? [1, 1.2, 1] : 1,
@@ -45,7 +53,6 @@ export default function BaiterekGame({ onWin }: { onWin: () => void }) {
                     className="absolute w-80 h-80 bg-yellow-400 rounded-full blur-3xl"
                 />
 
-                {/* Кнопка-отпечаток */}
                 <motion.button
                     onMouseDown={() => setIsPressing(true)}
                     onMouseUp={() => setIsPressing(false)}
@@ -55,7 +62,6 @@ export default function BaiterekGame({ onWin }: { onWin: () => void }) {
                     className={`relative z-10 w-72 h-72 rounded-full border-8 transition-all duration-500 flex items-center justify-center ${progress === 100 ? 'border-green-500 bg-green-50' : 'border-yellow-500 bg-slate-900'
                         } shadow-[0_0_50px_rgba(234,179,8,0.3)]`}
                 >
-                    {/* Прогресс-бар по кругу */}
                     <svg className="absolute inset-0 w-full h-full -rotate-90">
                         <circle
                             cx="144" cy="144" r="130"
@@ -84,7 +90,7 @@ export default function BaiterekGame({ onWin }: { onWin: () => void }) {
                 <div className="w-64 h-2 bg-slate-100 rounded-full mt-4 overflow-hidden">
                     <motion.div
                         className="h-full bg-yellow-500"
-                        animate={{ width: `${progress}%` }}
+                        animate={{ width: ${progress}% }}
                     />
                 </div>
             </div>
