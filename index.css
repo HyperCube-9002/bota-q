@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --color-quest-bg: #FFF6E5;
+  --color-quest-primary: #D99A4E;
+  --color-quest-primary-dark: #B57A36;
+  --color-quest-secondary: #A8C97F;
+  --color-quest-secondary-dark: #7A965D;
+  --color-quest-text: #4B2E1E;
+}
+
+@layer base {
+  body {
+    @apply bg-quest-bg text-quest-text antialiased;
+  }
+}
+
+@layer components {
+  .btn-bounce {
+    @apply active:translate-y-1 transition-transform duration-200;
+  }
+}
